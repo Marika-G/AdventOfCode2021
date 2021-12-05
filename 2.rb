@@ -4,6 +4,7 @@ class Submarine
     def initialize
         @position_x = 0
         @position_y = 0
+        @aim = 0
     end
     def get_position
         return @position_x,@position_y
@@ -15,14 +16,21 @@ class Submarine
     end
     protected
     def read_instructions(file)
-        movements = {'up' => 0, 'down' => 0, 'forward' => 0}
+        x = 0
+        y = 0
         IO.readlines(file).each do |line|
             instruction,value = line.split(" ")
-            movements[instruction] += value.to_i
+            case instruction
+            when "up"
+                @aim -= value.to_i
+            when "down"
+                @aim += value.to_i
+            when "forward"
+                x += value.to_i
+                y += value.to_i*@aim
+            end
         end
-        total_x = movements["forward"]
-        total_y = movements["down"] - movements["up"]
-        return total_x,total_y
+        return x,y
     end
     def move(x,y)
         @position_x += x
