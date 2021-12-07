@@ -2,35 +2,39 @@
 
 class Depth_o_meter
     def initialize(measures_file)
-        @raw_depth_measures = IO.readlines(measures_file).collect{|i| i.to_i}
+        @raw_depth_measures = IO.readlines(measures_file).collect{ |i| i.to_i }
         @depth_diff = calc_diff(@raw_depth_measures)
         @depth_diff_window = calc_diff_window(@raw_depth_measures)
     end
+
     def calc_diff(measures)
         diff = []
         for i in (2...measures.length)
             diff.push(measures[i] - measures[i-1])
         end
-        return diff
+        diff
     end
+
     def calc_diff_window(measures)
         measures_summed_window = []
         for i in (0..measures.length-3)
-            measures_summed_window.push(measures[i...i+3].sum)
+            measures_summed_window.push(measures[i i+3].sum)
         end
-        return calc_diff(measures_summed_window)
+        calc_diff(measures_summed_window)
     end
+
     def get_increases
-        return calc_increases(@depth_diff)
+        calc_increases(@depth_diff)
     end
+
     def get_increases_window
-        return calc_increases(@depth_diff_window)
+        calc_increases(@depth_diff_window)
     end
+
     protected
+
     def calc_increases(measures)
-        nb = 0
-        measures.each{|i| nb += 1 if i > 0}
-        return nb
+        measures.count(&:positive?)
     end
 end
 
